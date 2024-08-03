@@ -1,20 +1,20 @@
 {
   "private": true,
-  "displayName": "Plugin Name",
-  "name": "homebridge-plugin-name",
+  "displayName": "Homebridge MohuanLED BLE",
+  "name": "@sorae42/homebridge-mohuan-ble",
   "version": "1.0.0",
-  "description": "A short description about what your plugin does.",
+  "description": "Homebridge plugin for MohuanLED app.",
   "license": "Apache-2.0",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/USERNAME/GITHUB_PROJECT_NAME.git"
+    "url": "git+https://github.com/sorae42/homebridge-mohuan-ble.git"
   },
   "bugs": {
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME/issues"
+    "url": "https://github.com/sorae42/homebridge-mohuan-ble/issues"
   },
   "engines": {
-    "node": "^18.20.4 || ^20.16.0 || ^22.5.1",
+    "node": "^18.20.4 || 20.9.0 || ^20.16.0 || ^22.5.1",
     "homebridge": "^1.8.0 || ^2.0.0-beta.0"
   },
   "main": "dist/index.js",
@@ -25,7 +25,9 @@
     "prepublishOnly": "npm run lint && npm run build"
   },
   "keywords": [
-    "homebridge-plugin"
+    "homebridge-plugin",
+    "bluetooth-low-energy",
+    "led-strip"
   ],
   "devDependencies": {
     "@types/node": "^20.14.12",
@@ -37,5 +39,8 @@
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@abandonware/noble": "1.9.2-25"
   }
 }

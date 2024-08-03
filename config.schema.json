@@ -1,15 +1,25 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "Homebridge MohuanLED BLE",
   "pluginType": "platform",
   "singular": true,
   "schema": {
     "type": "object",
     "properties": {
       "name": {
-        "title": "Name",
+        "title": "Platform Name",
+        "type": "string",
+        "default": "MohuanLED BLE"
+      },
+      "devicename": {
+        "title": "Accessory Name",
         "type": "string",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "default": "Light Strip"
+      },
+      "bluetoothuuid": {
+        "title": "Bluetooth UUID",
+        "type": "string",
+        "required": true
       }
     }
   }
