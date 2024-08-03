@@ -31,6 +31,8 @@ export class ExamplePlatformAccessory {
   private characteristic?: Characteristic;
   private connected?: boolean = false;
 
+  private disconnectTimer?: NodeJS.Timeout;
+
   constructor(
     private readonly platform: ExampleHomebridgePlatform,
     private readonly accessory: PlatformAccessory,
@@ -104,7 +106,6 @@ export class ExamplePlatformAccessory {
       await noble.startScanningAsync();
       return;
     }
-    this.platform.log.debug('GetWriteCharacteristics');
     await this.peripheral.connectAsync();
     this.connected = true;
     const { characteristics } =
@@ -117,16 +118,14 @@ export class ExamplePlatformAccessory {
   }
 
   async debounceDisconnect() {
-    let timer: NodeJS.Timeout;
-    return () => {
-      clearTimeout(timer);
-      timer = setTimeout(async () => {
-        if (this.peripheral) {
-          await this.peripheral.disconnectAsync();
-          this.connected = false;
-        }
-      }, 5000);
-    };
+    clearTimeout(this.disconnectTimer);
+    this.disconnectTimer = setTimeout(async () => {
+      if (this.peripheral && this.connected) {
+        await this.peripheral.disconnectAsync();
+        this.connected = false;
+        this.platform.log.debug('Disconnected.');
+      }
+    }, 5000);
   }
 
   async setOn(value: CharacteristicValue) {
@@ -159,39 +158,46 @@ export class ExamplePlatformAccessory {
   // TODO: Check bluetooth status and report it here
   async getOn(): Promise<CharacteristicValue> {
     const isOn = this.states.On;
-    if (!this.connected) {
+    if (!this.characteristic) {
       await this.connectAndGetWriteCharacteristics();
       throw new this.platform.api.hap.HapStatusError(
         this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE,
       );
     } else {
       this.platform.log.debug('Get Characteristic On ->', isOn);
+      this.debounceDisconnect();
       return isOn;
     }
   }
 
   async setBrightness(value: CharacteristicValue) {
+    if (!this.connected) {
+      await this.connectAndGetWriteCharacteristics();
+    }
     this.states.Brightness = value as number;
     this.setRGB();
     this.platform.log.debug('Set Characteristic Brightness -> ', value);
   }
 
   async setHue(value: CharacteristicValue) {
+    if (!this.connected) {
+      await this.connectAndGetWriteCharacteristics();
+    }
     this.states.Hue = value as number;
     this.setRGB();
     this.platform.log.debug('Set Characteristic Hue -> ', value);
   }
 
   async setSaturation(value: CharacteristicValue) {
+    if (!this.connected) {
+      await this.connectAndGetWriteCharacteristics();
+    }
     this.states.Saturation = value as number;
     this.setRGB();
     this.platform.log.debug('Set Characteristic Saturation -> ', value);
   }
 
   async setRGB() {
-    if (!this.connected) {
-      await this.connectAndGetWriteCharacteristics();
-    }
     if (!this.characteristic) {
       return;
     }
