@@ -1,5 +1,4 @@
 {
-  "private": true,
   "displayName": "Homebridge MohuanLED BLE",
   "name": "@sorae42/homebridge-mohuan-ble",
   "version": "1.0.0",
