@@ -51,7 +51,7 @@ export function hsvToRgb(h: number, s: number, v: number = 100) {
       g = m;
       b = x + m;
       break;
-    default: 
+    default:
       r = 255;
       g = 0;
       b = 0;
