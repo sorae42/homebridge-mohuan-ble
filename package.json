@@ -1,7 +1,7 @@
 {
   "displayName": "Homebridge MohuanLED BLE",
   "name": "@sorae42/homebridge-mohuan-ble",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Homebridge plugin for MohuanLED app.",
   "license": "Apache-2.0",
   "type": "module",

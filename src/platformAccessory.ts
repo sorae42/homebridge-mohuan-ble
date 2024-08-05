@@ -2,7 +2,7 @@ import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
 import { ExampleHomebridgePlatform } from './platform.js';
 import noble, { Characteristic, Peripheral } from '@abandonware/noble';
-import { hslToRgb } from './util.js';
+import { hsvToRgb } from './util.js';
 
 /**
  * Platform Accessory
@@ -24,7 +24,6 @@ export class ExamplePlatformAccessory {
     // colors!
     Hue: 0,
     Saturation: 0,
-    Lightness: 0,
   };
 
   private peripheral?: Peripheral;
@@ -125,7 +124,7 @@ export class ExamplePlatformAccessory {
         this.connected = false;
         this.platform.log.debug('Disconnected.');
       }
-    }, 5000);
+    }, 10000);
   }
 
   async setOn(value: CharacteristicValue) {
@@ -201,15 +200,15 @@ export class ExamplePlatformAccessory {
     if (!this.characteristic) {
       return;
     }
-    const rgb = hslToRgb(
-      this.states.Hue / 360,
-      this.states.Saturation / 100,
-      this.states.Brightness / 200,
+    const rgb = hsvToRgb(
+      this.states.Hue,
+      this.states.Saturation,
+      this.states.Brightness,
     );
 
-    const r = ('0' + rgb[0].toString(16)).slice(-2);
-    const g = ('0' + rgb[1].toString(16)).slice(-2);
-    const b = ('0' + rgb[2].toString(16)).slice(-2);
+    const r = ('0' + rgb[0]?.toString(16)).slice(-2);
+    const g = ('0' + rgb[1]?.toString(16)).slice(-2);
+    const b = ('0' + rgb[2]?.toString(16)).slice(-2);
     const brightness = (
       '0' + Math.round((this.states.Brightness / 100) * 255).toString(16)
     ).slice(-2);

@@ -1,47 +1,61 @@
 const { round } = Math;
 
-/**
- * Converts an HSL color value to RGB. Conversion formula
- * adapted from https://en.wikipedia.org/wiki/HSL_color_space.
- * Assumes h, s, and l are contained in the set [0, 1] and
- * returns r, g, and b in the set [0, 255].
+/** Convert {@link Colour.HSV HSV} to {@link Colour.RGB RGB}.
  *
- * @param   {number}  h       The hue
- * @param   {number}  s       The saturation
- * @param   {number}  l       The lightness
- * @return  {Array}           The RGB representation
+ * See [HSL and HSV](https://en.wikipedia.org/wiki/HSL_and_HSV).
+ * @param {integer} h - Hue, between 0˚ and 360˚.
+ * @param {integer} s - Saturation, between 0% and 100%.
+ * @param {integer} [v=100] - Value, between 0% and 100%.
+ * @return {RGB} rgb - The corresponding {@link Colour.RGB RGB} value.
  */
-export function hslToRgb(h: number, s: number, l: number) {
-  let r, g, b;
-
-  if (s === 0) {
-    r = g = b = l; // achromatic
-  } else {
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    const p = 2 * l - q;
-    r = hueToRgb(p, q, h + 1/3);
-    g = hueToRgb(p, q, h);
-    b = hueToRgb(p, q, h - 1/3);
+export function hsvToRgb(h: number, s: number, v: number = 100) {
+  let r: number, g: number, b: number;
+  h /= 60.0;
+  s /= 100.0;
+  v /= 100.0;
+  const C = v * s;
+  const m = v - C;
+  let x = (h % 2) - 1.0;
+  if (x < 0) {
+    x = -x;
+  }
+  x = C * (1.0 - x);
+  switch (Math.floor(h) % 6) {
+    case 0:
+      r = C + m;
+      g = x + m;
+      b = m;
+      break;
+    case 1:
+      r = x + m;
+      g = C + m;
+      b = m;
+      break;
+    case 2:
+      r = m;
+      g = C + m;
+      b = x + m;
+      break;
+    case 3:
+      r = m;
+      g = x + m;
+      b = C + m;
+      break;
+    case 4:
+      r = x + m;
+      g = m;
+      b = C + m;
+      break;
+    case 5:
+      r = C + m;
+      g = m;
+      b = x + m;
+      break;
+    default: 
+      r = 255;
+      g = 0;
+      b = 0;
   }
 
   return [round(r * 255), round(g * 255), round(b * 255)];
-}
-
-function hueToRgb(p: number, q: number, t: number) {
-  if (t < 0) {
-    t += 1;
-  }
-  if (t > 1) {
-    t -= 1;
-  }
-  if (t < 1/6) {
-    return p + (q - p) * 6 * t;
-  }
-  if (t < 1/2) {
-    return q;
-  }
-  if (t < 2/3) {
-    return p + (q - p) * (2/3 - t) * 6;
-  }
-  return p;
 }
